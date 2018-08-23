@@ -33,3 +33,56 @@ output will be like this:
 ```
 Top 3 results: pug [0,9969646], Brabancon_griffon [0,002718836], French_bulldog [0,0001286689]
 ```
+# Supported layers:
+* Reshape
+* GlobalAveragePooling2D
+* Flatten
+* Concatenate3D
+* Add
+* BatchNormalization3D
+* ZeroPadding2D 
+* Conv2d
+* DepthwiseConv2D
+* SeparableConv2D
+* AveragePooling2D
+* MaxPool2d
+* Dense
+* Conv2DTr
+
+# Example.bat
+This exmaple do:
+1. Create GeneratedCode folder
+2. Run generate_example.py to create nets: ResNet50, InceptionV3, Xception, MobileNet
+3. Copy:
+- Program.cs - file, that test all of this networks on test_dog image
+- NetBase.cs - file, that contains all layers implimentations
+- NetUtils.cs - file for image preprocessing and result decode
+- project.csproj - general progect file to build test application
+4. Find MSBuild to build test app
+5. Try to build test app
+6. Run test app (it will measure executing time of all network and print top-3 predictions)
+
+output like this:
+```
+ResNet50...
+Time: 14,854 s
+Top 3 results: pug [0,973725], Brabancon_griffon [0,01610618], Pekinese [0,005809539]
+--------------
+
+InceptionV3...
+Time: 17,658 s
+Top 3 results: pug [0,4592525], Brabancon_griffon [0,1961291], Pekinese [0,07487778]
+--------------
+
+MobileNet...
+Time: 2,370 s
+Top 3 results: pug [0,9969646], Brabancon_griffon [0,002718836], French_bulldog[0,0001286689]
+--------------
+
+Xception...
+Time: 30,489 s
+Top 3 results: pug [0,8761638], Brabancon_griffon [0,02947094], Pekinese [0,001653932]
+--------------
+
+Press a key
+```
