@@ -162,8 +162,6 @@ namespace MyModel
                         break;
                 }
             }
-
-            //Array.Copy(src, arr, src.Length);
             return arr;
         }
 
@@ -591,30 +589,6 @@ namespace MyModel
             }
         }
 
-        /*
-        protected float[,,] MaxPool2d(int poolX, int poolY, int strideX, int strideY, float[,,] src)
-        {
-            int W = src.GetLength(0);
-            int H = src.GetLength(1);
-            int Deep = src.GetLength(2);            
-
-            //int resW = W / strideX;
-            //int resH = H / strideY;
-            int resW = 1 + (W - poolX) / strideX;
-            int resH = 1 + (H - poolX) / strideY;
-            float[,,] res = new float[resW, resH, Deep];
-            for (int d = 0; d < Deep; d++)
-                for (int x = 0; x < resW; x++)
-                    for (int y = 0; y < resH; y++)
-                    {
-                        float m = float.MinValue;
-                        for (int i = x * strideX; i < x * strideX + poolX; i++)
-                            for (int j = y * strideX; j < y * strideX + poolY; j++)
-                                if (src[i, j, d] > m) m = src[i, j, d];
-                        res[x, y, d] = m;
-                    }
-            return res;
-        }*/
 
         protected float[] Dense1D(float[] src, float[,] weights, float[] bias)
         {
@@ -638,8 +612,7 @@ namespace MyModel
             int W = src.GetLength(0);
             int H = src.GetLength(1);
             int Deep = src.GetLength(2);
-
-            // ядро свёртки 4-х мерное. X, Y, Канал, Кол-во фильтров
+            
             int kernelW = kernel.GetLength(0);
             int kernelH = kernel.GetLength(1);
             int filterChannel = kernel.GetLength(2);
