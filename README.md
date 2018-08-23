@@ -66,26 +66,22 @@ output like this:
 ```
 ResNet50...
 Time: 14,854 s
-Top 3 results: pug [0,973725], Brabancon_griffon [0,01610618], Pekinese [0,00580
-9539]
+Top 3 results: pug [0,973725], Brabancon_griffon [0,01610618], Pekinese [0,005809539]
 --------------
 
 InceptionV3...
 Time: 17,658 s
-Top 3 results: pug [0,4592525], Brabancon_griffon [0,1961291], Pekinese [0,07487
-778]
+Top 3 results: pug [0,4592525], Brabancon_griffon [0,1961291], Pekinese [0,07487778]
 --------------
 
 MobileNet...
 Time: 2,370 s
-Top 3 results: pug [0,9969646], Brabancon_griffon [0,002718836], French_bulldog
-[0,0001286689]
+Top 3 results: pug [0,9969646], Brabancon_griffon [0,002718836], French_bulldog[0,0001286689]
 --------------
 
 Xception...
 Time: 30,489 s
-Top 3 results: pug [0,8761638], Brabancon_griffon [0,02947094], Pekinese [0,0016
-53932]
+Top 3 results: pug [0,8761638], Brabancon_griffon [0,02947094], Pekinese [0,001653932]
 --------------
 
 Press a key
