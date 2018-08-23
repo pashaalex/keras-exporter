@@ -61,3 +61,32 @@ This exmaple do:
 4. Find MSBuild to build test app
 5. Try to build test app
 6. Run test app (it will measure executing time of all network and print top-3 predictions)
+
+output like this:
+```
+ResNet50...
+Time: 14,854 s
+Top 3 results: pug [0,973725], Brabancon_griffon [0,01610618], Pekinese [0,00580
+9539]
+--------------
+
+InceptionV3...
+Time: 17,658 s
+Top 3 results: pug [0,4592525], Brabancon_griffon [0,1961291], Pekinese [0,07487
+778]
+--------------
+
+MobileNet...
+Time: 2,370 s
+Top 3 results: pug [0,9969646], Brabancon_griffon [0,002718836], French_bulldog
+[0,0001286689]
+--------------
+
+Xception...
+Time: 30,489 s
+Top 3 results: pug [0,8761638], Brabancon_griffon [0,02947094], Pekinese [0,0016
+53932]
+--------------
+
+Press a key
+```
