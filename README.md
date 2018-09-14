@@ -48,6 +48,7 @@ Top 3 results: pug [0,9969646], Brabancon_griffon [0,002718836], French_bulldog 
 * MaxPool2d
 * Dense
 * Conv2DTr
+* Permute
 
 # Example.bat
 This exmaple do:
