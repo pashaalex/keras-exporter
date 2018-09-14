@@ -144,6 +144,29 @@ def save_weights(fName, model):
                             for f in range(0, N):
                                 fout.write(struct.pack("f", w[x, y, f, cn]))
 
+            elif layerClass == 'PReLU':
+                w = layer.get_weights()[0]
+                if len(list(w.shape)) == 1:
+                    xl = w.shape[0]
+                    fout.write(struct.pack("i", 1))
+                    fout.write(struct.pack("i", xl))
+                    for x in range(0, xl):
+                        fout.write(struct.pack("f", w[x]))
+                elif len(list(w.shape)) == 3:
+                    xl, yl, zl = w.shape
+                    fout.write(struct.pack("i", 3))
+                    fout.write(struct.pack("i", xl))
+                    fout.write(struct.pack("i", yl))
+                    fout.write(struct.pack("i", zl))
+                    for x in range(0, xl):
+                        for y in range(0, yl):
+                            for z in range(0, zl):
+                                fout.write(struct.pack("f", w[x, y, z]))
+                else:
+                    print("PRELU unexpected len ")
+                    print(w.shape)
+                
+
             # Layers, that have no weights:
             elif layerClass == 'MaxPooling2D' or layerClass == 'Flatten' or layerClass == 'Dropout':
                 continue
@@ -189,14 +212,14 @@ def sequential_to_csharp(model, csClassName, debug_console_write = False):
     
     script = []
     
-    model_output_type = 'float[%s]' % (',' * (len(model.output.shape)-2))    
+    model_output_type = 'float[%s]' % (',' * (len(np.array(model.output).shape)-2))    
     layer_nmb = 0
     prev_name = ''
     lname = ''
     for layer in model.layers:        
         layer_nmb = layer_nmb + 1
         d = layer.get_config()
-        lname = d['name']
+        lname = d['name'].replace('-', '_')
 
         output_type = 'float[%s]' % (',' * (len(layer.output.shape) - 2))
         output_dim = len(layer.output.shape) - 1
@@ -207,7 +230,7 @@ def sequential_to_csharp(model, csClassName, debug_console_write = False):
             t = l
             if l.__class__.__name__ == 'Dropout':
                 t = get_prev_layers(l)[0]            
-            arr.append(t.get_config()['name'])
+            arr.append(t.get_config()['name'].replace('-', '_'))
         if (len(arr) > 0):
             prev_name = ", ".join(arr)        
 
@@ -231,6 +254,10 @@ def sequential_to_csharp(model, csClassName, debug_console_write = False):
             if (len(s) > 0) :
                 script.append(s)
 
+        elif layerClass == 'PReLU':
+            script.append("    %s %s = PReLU%dD((%s)Weights[\"%s_weights\"], %s);" % (output_type, lname, output_dim, output_type, lname, prev_name))
+            script_loader.append("        Weights.Add(\"%s_weights\", ReadTensor(br));" % (lname))
+
         elif layerClass == 'ZeroPadding2D':
             hp, wp = d['padding']
             top, bottom = hp
@@ -243,6 +270,10 @@ def sequential_to_csharp(model, csClassName, debug_console_write = False):
             for i in l:
                 arr.append(str(i))
             script.append("    %s %s = (%s)Reshape(%s, %s);" % (output_type, lname, output_type, prev_name, ','.join(arr)))
+
+        elif layerClass == 'Permute':
+            dims = ','.join([str(i) for i in list(d['dims'])])            
+            script.append("    %s %s = Permute%dD(%s, %s);" % (output_type, lname, output_dim, prev_name, dims))
 
         elif layerClass == 'BatchNormalization':
             script_loader.append("        Weights.Add(\"%s_gamma\", ReadTensor(br));" % (lname))

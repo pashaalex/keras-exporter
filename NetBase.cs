@@ -62,19 +62,21 @@ namespace MyModel
 
         protected void SoftMax3D(float[,,] src)
         {
-            double sum = 0;
             for (int i = 0; i < src.GetLength(0); i++)
                 for (int j = 0; j < src.GetLength(1); j++)
+                {
+                    double sum = 0;
+
+
                     for (int k = 0; k < src.GetLength(2); k++)
                         sum += (float)Math.Exp(src[i, j, k]);
 
-            for (int i = 0; i < src.GetLength(0); i++)
-                for (int j = 0; j < src.GetLength(1); j++)
+
+
                     for (int k = 0; k < src.GetLength(2); k++)
                         src[i, j, k] = (float)(Math.Exp(src[i, j, k]) / sum);
+                }
         }
-
-
 
         protected void ReLu6_1D(float[] src)
         {
@@ -88,12 +90,42 @@ namespace MyModel
                 for (int j = 0; j < src.GetLength(1); j++)
                     src[i, j] = Math.Min(Math.Max(src[i, j], 0), 6);
         }
+
         protected void ReLu6_3D(float[,,] src)
         {
             for (int i = 0; i < src.GetLength(0); i++)
                 for (int j = 0; j < src.GetLength(1); j++)
                     for (int k = 0; k < src.GetLength(2); k++)
                         src[i, j, k] = Math.Min(Math.Max(src[i, j, k], 0), 6);
+        }
+
+        protected float[,,] PReLU3D(float[,,] weights, float[,,] src)
+        {
+            int il = src.GetLength(0);
+            int jl = src.GetLength(1);
+            int kl = src.GetLength(2);
+            float[,,] res = new float[il, jl, kl];
+
+            for (int i = 0; i < il; i++)
+                for (int j = 0; j < jl; j++)
+                    for (int k = 0; k < kl; k++)
+                        if (src[i, j, k] < 0)
+                            res[i, j, k] = weights[0, 0, k] * src[i, j, k];
+                        else
+                            res[i, j, k] = src[i, j, k];
+            return res;
+        }
+
+        protected float[] PReLU1D(float[] weights, float[] src)
+        {
+            int il = src.GetLength(0);
+            float[] res = new float[il];
+            for (int i = 0; i < il; i++)
+                if (src[i] < 0)
+                    res[i] = weights[i] * src[i];
+                else
+                    res[i] = src[i];
+            return res;
         }
 
         protected void ReLu1D(float[] src)
@@ -163,6 +195,36 @@ namespace MyModel
                 }
             }
             return arr;
+        }
+
+        protected float[,,] Permute3D(float[,,] src, int o1, int o2, int o3)
+        {
+            int s1 = src.GetLength(0);
+            int s2 = src.GetLength(1);
+            int s3 = src.GetLength(2);
+            int[] srcArrLen = new int[3] { s1, s2, s3 };
+            int[] dstArrLen = new int[3] { srcArrLen[o1 - 1], srcArrLen[o2 - 1], srcArrLen[o3 - 1] };
+            float[,,] res = new float[dstArrLen[0], dstArrLen[1], dstArrLen[2]];
+
+            int[] srcInd = new int[3];
+            int[] dstInd = new int[3];
+
+            for (int i = 0; i < s1; i++)
+                for (int j = 0; j < s2; j++)
+                    for (int k = 0; k < s3; k++)
+                    {
+                        srcInd[0] = i;
+                        srcInd[1] = j;
+                        srcInd[2] = k;
+
+                        dstInd[0] = srcInd[o1 - 1];
+                        dstInd[1] = srcInd[o2 - 1];
+                        dstInd[2] = srcInd[o3 - 1];
+
+                        res[dstInd[0], dstInd[1], dstInd[2]] = src[i, j, k];
+                    }
+
+            return res;
         }
 
         protected float[] GlobalAveragePooling2D(float[,,] src)
