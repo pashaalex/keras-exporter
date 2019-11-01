@@ -15,7 +15,7 @@ folderName = "GeneratedCode\\"
 model = mobilenet.MobileNet(weights='imagenet') # load model from keras
 model.summary() # print model summary
 keras2cs.save_weights('%sMobileNet.dat' % (folderName), model) # save MobileNet.dat weights file
-main_script = keras2cs.model_to_csharp(model, "MobileNet") # get C# lines for MobileNet.cs file
+main_script = keras2cs.sequential_to_csharp(model, "MobileNet") # get C# lines for MobileNet.cs file
 with open('%sMobileNet.cs' % (folderName), 'w') as fout:
     fout.write("\n".join(main_script))
 ```
